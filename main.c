@@ -17,20 +17,20 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lua_State *L = luaL_newstate();
+    lua_State *L = luaL_newstate(0, 0);
     luaL_openlibs(L);
     luaL_loadfile(L, argv[1]);
     luaL_checktype(L, -1, LUA_TFUNCTION);
 
     luaL_Buffer vector;
-    luaL_buffinit(luaL_newstate(), &vector);
+    luaL_buffinit(luaL_newstate(0, 0), &vector);
     if (lua_dump(L, lua_writer, &vector, 1))
     {
         printf("lua_dump error\n");
     }
 
     luaL_Buffer file;
-    luaL_buffinit(luaL_newstate(), &file);
+    luaL_buffinit(luaL_newstate(0, 0), &file);
     char buffer[512];
     sprintf(buffer, "const unsigned int _GAME_CHUNK_SIZE = %lu;\nconst unsigned char _GAME_CHUNK[] = {", vector.n);
     luaL_addstring(&file, buffer);

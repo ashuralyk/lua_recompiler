@@ -13,7 +13,7 @@ static int error_handler(lua_State *L)
 #include "luacode.c"
 int main()
 {
-    lua_State *L = luaL_newstate();
+    lua_State *L = luaL_newstate(0, 0);
     luaL_openlibs(L);
 
     lua_pushcfunction(L, error_handler);
