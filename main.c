@@ -9,6 +9,18 @@ static int lua_writer(lua_State *L, const void *bytes, size_t size, void *vector
     return 0;
 }
 
+void hex(char *hex, uint8_t *bytes, int size)
+{
+	int pointer = 0;
+	char hex_char[16];
+	for (int i = 0; i < size; ++i)
+	{
+		sprintf(hex_char, "%02x", (int)bytes[i]);
+		memcpy(&hex[pointer], hex_char, strlen(hex_char));
+		pointer += strlen(hex_char);
+	}
+}
+
 int main(int argc, char *argv[])
 {
     if (argc < 3)
@@ -29,6 +41,12 @@ int main(int argc, char *argv[])
         printf("lua_dump error\n");
     }
 
+	// create luacode dep-cell
+    FILE *f1 = fopen("luacode", "w+");
+    fwrite(vector.b, sizeof(unsigned char), vector.n, f1);
+    fclose(f1);
+
+	// dump into luacode.c
     luaL_Buffer file;
     luaL_buffinit(luaL_newstate(0, 0), &file);
     char buffer[512];
@@ -46,9 +64,9 @@ int main(int argc, char *argv[])
     }
     luaL_addstring(&file, "};");
 
-    FILE *f = fopen(argv[2], "w+");
-    fwrite(file.b, sizeof(unsigned char), file.n, f);
-    fclose(f);
+    FILE *f2 = fopen(argv[2], "w+");
+    fwrite(file.b, sizeof(unsigned char), file.n, f2);
+    fclose(f2);
 
     return 0;
 }
